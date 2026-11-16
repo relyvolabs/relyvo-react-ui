@@ -1,0 +1,262 @@
+/* Relyvo React UI — default theme.
+ *
+ * Everything is driven by CSS variables on .relyvo-ui so an application can
+ * match its own brand without overriding internals. */
+
+.relyvo-ui {
+  --relyvo-accent: #4f7cff;
+  --relyvo-accent-ink: #ffffff;
+  --relyvo-surface: #0f1524;
+  --relyvo-surface-raised: #161e31;
+  --relyvo-line: #243049;
+  --relyvo-ink: #e8eefc;
+  --relyvo-ink-muted: #9aa8c4;
+  --relyvo-danger: #ff6b6b;
+  --relyvo-signal: #45d6b0;
+  --relyvo-radius: 12px;
+  --relyvo-font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  color: var(--relyvo-ink);
+  font-family: var(--relyvo-font);
+}
+
+/* Chat ------------------------------------------------------------------ */
+
+.relyvo-chat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 320px;
+  overflow: hidden;
+  border: 1px solid var(--relyvo-line);
+  border-radius: var(--relyvo-radius);
+  background: var(--relyvo-surface);
+}
+
+.relyvo-chat__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--relyvo-line);
+}
+
+.relyvo-chat__title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.relyvo-chat__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--relyvo-ink-muted);
+}
+
+.relyvo-chat__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--relyvo-ink-muted);
+}
+
+.relyvo-chat__dot--connected { background: var(--relyvo-signal); }
+.relyvo-chat__dot--error { background: var(--relyvo-danger); }
+
+.relyvo-chat__list {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  padding: 12px 14px;
+}
+
+.relyvo-chat__empty,
+.relyvo-chat__error {
+  margin: auto;
+  max-width: 260px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--relyvo-ink-muted);
+}
+
+.relyvo-chat__error { color: var(--relyvo-danger); }
+
+.relyvo-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-width: 82%;
+}
+
+.relyvo-msg--own { align-self: flex-end; align-items: flex-end; }
+
+.relyvo-msg__meta {
+  font-size: 11px;
+  color: var(--relyvo-ink-muted);
+}
+
+.relyvo-msg__bubble {
+  padding: 7px 10px;
+  border-radius: 10px;
+  background: var(--relyvo-surface-raised);
+  font-size: 14px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.relyvo-msg--own .relyvo-msg__bubble {
+  background: var(--relyvo-accent);
+  color: var(--relyvo-accent-ink);
+}
+
+.relyvo-msg--pending .relyvo-msg__bubble { opacity: 0.6; }
+
+.relyvo-chat__typing {
+  min-height: 16px;
+  padding: 0 14px 4px;
+  font-size: 12px;
+  color: var(--relyvo-ink-muted);
+}
+
+.relyvo-chat__composer {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px 12px;
+  border-top: 1px solid var(--relyvo-line);
+}
+
+.relyvo-chat__input {
+  flex: 1;
+  min-width: 0;
+  padding: 9px 11px;
+  border: 1px solid var(--relyvo-line);
+  border-radius: 9px;
+  background: var(--relyvo-surface-raised);
+  color: var(--relyvo-ink);
+  font: inherit;
+  font-size: 14px;
+}
+
+.relyvo-chat__input:focus-visible {
+  outline: 2px solid var(--relyvo-accent);
+  outline-offset: 1px;
+}
+
+.relyvo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid var(--relyvo-line);
+  border-radius: 9px;
+  background: var(--relyvo-surface-raised);
+  color: var(--relyvo-ink);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.relyvo-btn:hover { border-color: var(--relyvo-accent); }
+
+.relyvo-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.relyvo-btn--primary {
+  border-color: transparent;
+  background: var(--relyvo-accent);
+  color: var(--relyvo-accent-ink);
+}
+
+.relyvo-btn--danger {
+  border-color: transparent;
+  background: var(--relyvo-danger);
+  color: #fff;
+}
+
+.relyvo-btn:focus-visible {
+  outline: 2px solid var(--relyvo-accent);
+  outline-offset: 2px;
+}
+
+/* Call ------------------------------------------------------------------ */
+
+.relyvo-call {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  min-height: 320px;
+}
+
+.relyvo-call__stage {
+  flex: 1;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  align-content: start;
+  overflow-y: auto;
+  padding: 8px;
+  border: 1px solid var(--relyvo-line);
+  border-radius: var(--relyvo-radius);
+  background: var(--relyvo-surface);
+}
+
+.relyvo-tile {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  background: #0a0f1a;
+}
+
+.relyvo-tile__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.relyvo-tile__placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--relyvo-ink-muted);
+  font-size: 13px;
+}
+
+.relyvo-tile__name {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  max-width: calc(100% - 16px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 3px 8px;
+  border-radius: 7px;
+  background: rgb(0 0 0 / 55%);
+  font-size: 12px;
+}
+
+.relyvo-tile--speaking { outline: 2px solid var(--relyvo-signal); outline-offset: -2px; }
+
+.relyvo-call__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.relyvo-call__error {
+  padding: 8px 12px;
+  border-radius: 9px;
+  border: 1px solid color-mix(in oklab, var(--relyvo-danger) 45%, transparent);
+  color: var(--relyvo-danger);
+  font-size: 13px;
+}
