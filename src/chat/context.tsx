@@ -2,8 +2,10 @@ import * as React from "react";
 
 import {
   RelyvoChat as RelyvoChatClient,
+  type ChatChannel,
   type ChatCredentials,
   type ChatMessage,
+  type ChatUnread,
   type MessageEvent,
   type TypingEvent,
 } from "@relyvolabs/web-sdk";
@@ -19,6 +21,8 @@ export type ChatClientLike = {
   on(event: "disconnected", handler: (reason?: string) => void): () => void;
   on(event: "error", handler: (error: Error) => void): () => void;
   history(input?: { limit?: number }): Promise<{ items: ChatMessage[] }>;
+  channels(): Promise<ChatChannel[]>;
+  unread(channelId: string): Promise<ChatUnread>;
   send(input: { content: string; clientMessageId: string }): Promise<{ message: ChatMessage }>;
 };
 
@@ -45,6 +49,13 @@ export type RelyvoChatState = {
   error: Error | null;
   messages: ChatMessage[];
   typing: string[];
+  /** Channels this user belongs to, newest activity first. */
+  channels: ChatChannel[];
+  /** Unread message count per channel id. */
+  unread: Record<string, number>;
+  /** Id of the channel this session is subscribed to. */
+  activeChannelId: string;
+  refreshChannels: () => Promise<void>;
   send: (content: string) => Promise<void>;
   retry: () => void;
 };
@@ -79,6 +90,29 @@ function mergeHistory(current: ChatMessage[], items: ChatMessage[]): ChatMessage
   return [...older, ...current];
 }
 
+/** Cap keeps the fan-out bounded: a list shows the newest channels first. */
+const UNREAD_FANOUT_LIMIT = 20;
+
+async function loadUnread(
+  client: ChatClientLike,
+  list: ChatChannel[],
+  activeChannelId: string,
+): Promise<Record<string, number>> {
+  const capped = list.slice(0, UNREAD_FANOUT_LIMIT);
+  const entries = await Promise.all(
+    capped.map(async (channel) => {
+      try {
+        const summary = await client.unread(channel.id);
+        return [channel.id, summary.unread_count] as const;
+      } catch {
+        return [channel.id, 0] as const;
+      }
+    }),
+  );
+  // The open channel is being read, so its badge would be stale by definition.
+  return Object.fromEntries(entries.filter(([id]) => id !== activeChannelId));
+}
+
 /**
  * Owns one chat session and exposes it to the panel.
  *
@@ -97,6 +131,8 @@ export function RelyvoChatProvider({
   const [error, setError] = React.useState<Error | null>(null);
   const [messages, setMessages] = React.useState<ChatMessage[]>([]);
   const [typing, setTyping] = React.useState<Record<string, string>>({});
+  const [channels, setChannels] = React.useState<ChatChannel[]>([]);
+  const [unread, setUnread] = React.useState<Record<string, number>>({});
   const [attempt, setAttempt] = React.useState(0);
 
   const clientRef = React.useRef<ChatClientLike | null>(null);
@@ -104,6 +140,7 @@ export function RelyvoChatProvider({
   optionsRef.current = { getConnectionToken, getSubscriptionToken, createClient };
 
   const channelKey = `${credentials.wsUrl}|${credentials.token}|${credentials.channel}`;
+  const activeChannelId = credentials.channel.split(":").at(-1) ?? "";
 
   React.useEffect(() => {
     let cancelled = false;
@@ -146,6 +183,12 @@ export function RelyvoChatProvider({
         const page = await client.history({ limit: historyLimit });
         if (cancelled) return;
         setMessages((current) => mergeHistory(current, page.items));
+
+        const list = await client.channels().catch(() => [] as ChatChannel[]);
+        const counts = await loadUnread(client, list, activeChannelId);
+        if (cancelled) return;
+        setChannels(list);
+        setUnread(counts);
       } catch (caught) {
         if (cancelled) return;
         setError(caught instanceof Error ? caught : new Error(String(caught)));
@@ -165,6 +208,14 @@ export function RelyvoChatProvider({
     // The callbacks are read through optionsRef so a re-render does not reconnect.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channelKey, historyLimit, attempt]);
+
+  const refreshChannels = React.useCallback(async () => {
+    const client = clientRef.current;
+    if (!client) return;
+    const list = await client.channels().catch(() => []);
+    setChannels(list);
+    setUnread(await loadUnread(client, list, activeChannelId));
+  }, [activeChannelId]);
 
   const send = React.useCallback(
     async (content: string) => {
@@ -215,10 +266,14 @@ export function RelyvoChatProvider({
       error,
       messages,
       typing: Object.values(typing),
+      channels,
+      unread,
+      activeChannelId,
+      refreshChannels,
       send,
       retry,
     }),
-    [status, error, messages, typing, send, retry],
+    [status, error, messages, typing, channels, unread, activeChannelId, refreshChannels, send, retry],
   );
 
   return <RelyvoChatContext.Provider value={value}>{children}</RelyvoChatContext.Provider>;

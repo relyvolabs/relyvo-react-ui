@@ -22,6 +22,8 @@ export type {
 } from "./chat/context.js";
 export { RelyvoChatPanel } from "./chat/panel.js";
 export type { RelyvoChatPanelProps } from "./chat/panel.js";
+export { RelyvoChannelList } from "./chat/channel-list.js";
+export type { ChannelFilter, RelyvoChannelListProps } from "./chat/channel-list.js";
 
 export { RelyvoCallProvider, useRelyvoCall } from "./call/context.js";
 export type {
@@ -32,5 +34,7 @@ export type {
 } from "./call/context.js";
 export { RelyvoCallStage } from "./call/stage.js";
 export type { RelyvoCallStageProps } from "./call/stage.js";
+export { RelyvoPrejoin } from "./call/prejoin.js";
+export type { PrejoinSelection, RelyvoPrejoinProps } from "./call/prejoin.js";
 
-export const VERSION = "0.1.0";
+export const VERSION = "0.2.0";

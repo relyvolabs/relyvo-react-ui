@@ -39,6 +39,23 @@ The panel renders history, live messages, a typing indicator, connection state,
 error state with retry, and a composer. Enter sends; the composer is disabled
 while the socket is not connected.
 
+### Channel list
+
+```tsx
+<RelyvoChannelList
+  activeChannelId={activeId}
+  onSelect={(channel) => {
+    // Fetch credentials for this channel from your backend, then re-render the
+    // provider with them: a subscription token is scoped to one channel.
+    void loadCredentials(channel.id).then(setChatCredentials);
+  }}
+/>
+```
+
+Shows name, type (Direct/Group/Meeting), read-only state for closed meeting
+channels, and unread badges. `filter` narrows the list to `direct`, `group` or
+`meeting`. The channel already open is never badged.
+
 ## Video call
 
 ```tsx
@@ -61,6 +78,22 @@ and offers microphone, camera, screen-share and leave controls.
 
 `showControls={false}` hides the built-in bar when you render your own controls
 with `useRelyvoCall()`.
+
+### Pre-join
+
+```tsx
+<RelyvoPrejoin
+  onJoin={async ({ cameraEnabled, microphoneEnabled, cameraDeviceId, microphoneDeviceId }) => {
+    const credentials = await fetchCallCredentials({ cameraDeviceId, microphoneDeviceId });
+    setCall(credentials);
+  }}
+  onCancel={() => setStage("idle")}
+/>
+```
+
+Previews the local camera, lists cameras/microphones/speakers, shows an input
+level meter, and lets the participant turn either device off before joining. The
+preview stream is stopped when the component unmounts or the choice changes.
 
 ## Hooks
 
@@ -97,8 +130,8 @@ component; credentials must arrive from your server.
 
 ## Status
 
-`0.1.0`: chat panel and call stage. Not included yet: pre-join device
-selection, channel list, attachments, message editing, and a no-framework build
+`0.2.0`: chat panel, channel list, call stage and pre-join. Not included yet:
+attachments, message editing, a room/meeting list, and a no-framework build
 (web components).
 
 ## Licence

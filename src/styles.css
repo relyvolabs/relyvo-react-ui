@@ -260,3 +260,209 @@
   color: var(--relyvo-danger);
   font-size: 13px;
 }
+
+/* Channel list ----------------------------------------------------------- */
+
+.relyvo-channels {
+  display: flex;
+  flex-direction: column;
+  width: 264px;
+  min-width: 200px;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--relyvo-line);
+  border-radius: var(--relyvo-radius);
+  background: var(--relyvo-surface);
+}
+
+.relyvo-channels__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--relyvo-line);
+}
+
+.relyvo-channels__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--relyvo-ink-muted);
+}
+
+.relyvo-channels__count {
+  font-size: 11px;
+  color: var(--relyvo-ink-muted);
+}
+
+.relyvo-channels__empty {
+  padding: 16px 14px;
+  font-size: 13px;
+  color: var(--relyvo-ink-muted);
+}
+
+.relyvo-channels__list {
+  list-style: none;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.relyvo-channels__item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "name badge" "meta badge";
+  gap: 0 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.relyvo-channels__item:hover { background: var(--relyvo-surface-raised); }
+
+.relyvo-channels__item[aria-current="page"] {
+  background: color-mix(in oklab, var(--relyvo-accent) 18%, transparent);
+}
+
+.relyvo-channels__item:focus-visible {
+  outline: 2px solid var(--relyvo-accent);
+  outline-offset: -2px;
+}
+
+.relyvo-channels__name {
+  grid-area: name;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.relyvo-channels__meta {
+  grid-area: meta;
+  font-size: 11px;
+  color: var(--relyvo-ink-muted);
+}
+
+.relyvo-channels__badge {
+  grid-area: badge;
+  align-self: center;
+  min-width: 20px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--relyvo-accent);
+  color: var(--relyvo-accent-ink);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Pre-join --------------------------------------------------------------- */
+
+.relyvo-prejoin {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(220px, 1fr);
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--relyvo-line);
+  border-radius: var(--relyvo-radius);
+  background: var(--relyvo-surface);
+}
+
+@media (max-width: 720px) {
+  .relyvo-prejoin { grid-template-columns: 1fr; }
+}
+
+.relyvo-prejoin__screen {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  background: #0a0f1a;
+}
+
+.relyvo-prejoin__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+.relyvo-prejoin__placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  color: var(--relyvo-ink-muted);
+}
+
+.relyvo-prejoin__side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+.relyvo-prejoin__title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.relyvo-prejoin__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--relyvo-ink-muted);
+}
+
+.relyvo-prejoin__select {
+  padding: 8px 10px;
+  border: 1px solid var(--relyvo-line);
+  border-radius: 9px;
+  background: var(--relyvo-surface-raised);
+  color: var(--relyvo-ink);
+  font: inherit;
+  font-size: 13px;
+}
+
+.relyvo-prejoin__meter {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--relyvo-line);
+  overflow: hidden;
+}
+
+.relyvo-prejoin__meter span {
+  display: block;
+  height: 100%;
+  width: var(--relyvo-level, 0%);
+  background: var(--relyvo-signal);
+  transition: width 80ms linear;
+}
+
+.relyvo-prejoin__actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.relyvo-prejoin__error {
+  padding: 8px 10px;
+  border-radius: 9px;
+  border: 1px solid color-mix(in oklab, var(--relyvo-danger) 45%, transparent);
+  color: var(--relyvo-danger);
+  font-size: 12px;
+}

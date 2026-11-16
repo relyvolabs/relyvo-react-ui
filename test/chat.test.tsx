@@ -50,6 +50,16 @@ function fakeClient() {
     async history() {
       return { items: [message({ id: "m1", content: "from history" })] };
     },
+    async channels() {
+      return [
+        { id: "0f5b3a7e", type: "group", name: "Support", last_seq: 4 },
+        { id: "ch_mtg_1", type: "group", name: "Meeting chat", last_seq: 1, source_product: "meet", sending_enabled: false },
+        { id: "a1b2c3d4", type: "direct", name: "", last_seq: 2 },
+      ];
+    },
+    async unread(channelId: string) {
+      return { channel_id: channelId, unread_count: channelId === "0f5b3a7e" ? 3 : 0, has_unread: channelId === "0f5b3a7e", last_seq: 4, last_read_seq: 1 };
+    },
     async send(input) {
       state.sent.push(input);
       return { message: message({ id: "m2", content: input.content }) };

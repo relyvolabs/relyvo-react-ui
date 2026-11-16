@@ -1,6 +1,6 @@
 {
   "name": "@relyvolabs/react-ui",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "React components for Relyvo: a ready chat panel and a video call stage on top of @relyvolabs/web-sdk.",
   "license": "UNLICENSED",
   "type": "module",
@@ -44,7 +44,7 @@
     "pack:check": "npm pack --dry-run"
   },
   "dependencies": {
-    "@relyvolabs/web-sdk": "^0.1.1",
+    "@relyvolabs/web-sdk": "^0.1.2",
     "livekit-client": "^2.23.0"
   },
   "peerDependencies": {
